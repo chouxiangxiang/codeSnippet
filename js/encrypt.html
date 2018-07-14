@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="uft-8" />
+	<title>加密</title>
+	<style>
+		.form-group {
+			height: 36px;
+			line-height: 36px;
+		}
+	</style>
+</head>
+<body>
+	<div class="form-group">
+			<label for="content">设置Key值:</label>
+			<input type="text" name="key" id="key" value="qJ440d4TXY4n6ACE">
+			<button id="setKey">设置</button>
+	</div>
+	<div class="form-group">
+			<label for="content">请输入需要<b>加密</b>的内容:</label>
+			<input type="text" name="jiami" id="jiami">
+			<button id="doJiaMi">加密</button>
+	</div>
+	<div class="form-group">
+			<label for="content">请输入需要<b>解密</b>的内容:</label>
+			<input type="text" name="jiemi" id="jiemi">
+			<button id="doJieMi">解密</button>
+	</div>
+	<div class="form-group">
+		<textarea rows="6" cols="61" name="result" id="result"></textarea>
+	</div>
+	<script type="text/javascript" src="//s.thsi.cn/cb?/js/m/kh/common/scripts/encrypt/;aes.js;md5.js"></script>
+	<script type="text/javascript">
+		let KEY = 'qJ440d4TXY4n6ACE'
+		// 加密
+		const encrypt = function(str){
+		  let IV =  hex_md5(KEY).substr(8,16)
+		  let key = CryptoJS.enc.Utf8.parse(KEY) // 秘钥
+		  let iv= CryptoJS.enc.Utf8.parse(IV) // 向量iv
+		  let encrypted = CryptoJS.AES.encrypt(str, key, {
+		    iv:iv,
+		    mode: CryptoJS.mode.CBC, 
+		    padding:CryptoJS.pad.Pkcs7
+		  })
+		  return encrypted.toString()
+		}
+		// 解密
+		const decrypt = function(str){
+		  let IV =  hex_md5(KEY).substr(8,16)
+		  let key = CryptoJS.enc.Utf8.parse(KEY) // 秘钥
+		  let iv = CryptoJS.enc.Utf8.parse(IV) // 向量iv
+		  let decrypted = CryptoJS.AES.decrypt(str,key,{
+		    iv:iv,
+		    mode: CryptoJS.mode.CBC,
+		    padding:CryptoJS.pad.Pkcs7
+		  })
+		  return decrypted.toString(CryptoJS.enc.Utf8)
+		}
+
+		// dom事件绑定
+		document.getElementById('setKey').addEventListener('click', function (event) {
+			KEY = document.getElementById('key').value
+		}, false)
+		document.getElementById('doJiaMi').addEventListener('click', function (event) {
+			let content = document.getElementById('jiami').value
+			document.getElementById('result').value = encrypt(content)
+		}, false)
+		document.getElementById('doJieMi').addEventListener('click', function (event) {
+			let content = document.getElementById('jiemi').value
+			document.getElementById('result').value = decrypt(content)
+		}, false)
+	</script>
+</body>
+</html>
